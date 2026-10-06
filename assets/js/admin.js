@@ -31,8 +31,11 @@
       <label class="field"><span>Email</span><input class="input" name="email" type="email" autocomplete="username"></label>
       <label class="field"><span>Password</span><input class="input" name="pw" type="password" autocomplete="current-password"></label>
       <div class="hint bad" id="err"></div><button class="btn block">Sign in</button>
-      <div class="demo-note small" style="background:var(--amber-50);color:var(--amber);padding:10px;border-radius:10px">Demo: admin@ibaexecutivemba.com / admin1234</div></form></div>`;
-    $('#f').onsubmit = (e) => { e.preventDefault(); try { A.signIn(e.target.email.value, e.target.pw.value); render(); } catch (err) { $('#err').textContent = err.message; } };
+      <div class="demo-note small" style="background:var(--amber-50);color:var(--amber);padding:10px;border-radius:10px">Demo: admin@ibaexecutivemba.com / admin1234<br><button type="button" class="btn link" id="fill" style="font-size:12.5px;margin-top:4px">Fill in the demo admin login</button></div>
+      <p class="center small muted">Member? <a href="index.html">Go to the member app</a></p></form></div>`;
+    const f = $('#f');
+    $('#fill').onclick = () => { f.email.value = 'admin@ibaexecutivemba.com'; f.pw.value = 'admin1234'; $('#err').textContent = ''; };
+    f.onsubmit = (e) => { e.preventDefault(); try { A.signIn(f.email.value, f.pw.value); render(); } catch (err) { $('#err').textContent = err.message; } };
   }
 
   function layout(active) {

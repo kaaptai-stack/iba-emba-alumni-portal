@@ -114,10 +114,12 @@
         <button type="button" class="btn link" id="forgot" style="margin:14px auto 0;display:block">Forgot password?</button>
       </form>
       <div class="footer-cta"><p class="cap">New here? Membership is by invitation from an alumnus or the alumni committee. Open the personal link in your invite to join.</p>
-      <div class="demo-note" style="margin-top:12px">Demo: sign in as <b>farhana.rahman@gmail.com</b> / <b>demo1234</b>, or open the <a href="#/demo/email/K7F2Q9">invite for Rafiq Ahmed</a> to try joining.</div></div>`);
+      <div class="demo-note" style="margin-top:12px">Demo: sign in as <b>farhana.rahman@gmail.com</b> / <b>demo1234</b>, or open the <a href="#/demo/email/K7F2Q9">invite for Rafiq Ahmed</a> to try joining.</div>
+      <p class="cap">Alumni committee? <a href="admin.html">Admin sign in</a></p></div>`);
     $('#f').onsubmit = (e) => {
       e.preventDefault(); const f = e.target;
-      try { API.signIn(f.email.value, f.pw.value); go('#/directory'); } catch (err) { $('#err').textContent = err.message; }
+      try { API.signIn(f.email.value, f.pw.value); go('#/directory'); }
+      catch (err) { if (err.code === 'admin') $('#err').innerHTML = `${esc(err.message)} <a href="admin.html">Open admin panel</a>`; else $('#err').textContent = err.message; }
     };
     $('#forgot').onclick = () => { const e = $('#f').email.value; toast(e ? `If ${e} is a member, a reset link is on its way.` : 'Enter your email first.', !e); };
   }

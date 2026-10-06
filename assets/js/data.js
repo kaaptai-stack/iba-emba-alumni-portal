@@ -300,8 +300,9 @@
     // session
     me() { return state.session ? byId(state.session) : null; },
     signIn(email, password) {
+      if (String(email).trim().toLowerCase() === state.admin.email) { const e = new Error('This is the admin account. Sign in on the admin panel instead.'); e.code = 'admin'; throw e; }
       const m = byEmail(email);
-      if (!m || m.password !== password) throw new Error('Email or password is incorrect.');
+      if (!m || m.password !== String(password).trim()) throw new Error('Email or password is incorrect.');
       if (!m.enabled) throw new Error('This account has been turned off by the alumni committee.');
       m.lastSignIn = new Date().toISOString(); state.session = m.id; save(); return m;
     },
@@ -468,7 +469,12 @@
     // ---------- admin ----------
     admin: {
       signedIn() { return state.admin.signedIn; },
-      signIn(email, pw) { if (email.trim().toLowerCase() !== state.admin.email || pw !== state.admin.password) throw new Error('Email or password is incorrect.'); state.admin.signedIn = true; save(); },
+      signIn(email, pw) {
+        const e = String(email).trim().toLowerCase();
+        if (e !== state.admin.email) throw new Error(byEmail(e) ? 'That is a member account. Use the admin email to sign in here.' : 'Email or password is incorrect.');
+        if (String(pw).trim() !== state.admin.password) throw new Error('Email or password is incorrect. Your browser may have filled in a saved member password.');
+        state.admin.signedIn = true; save();
+      },
       signOut() { state.admin.signedIn = false; save(); },
       members() { return state.members; },
       member: byId,
