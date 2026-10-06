@@ -27,7 +27,7 @@
 
   function login() {
     root.innerHTML = `<div class="login"><form class="card stack" id="f" novalidate>
-      <div class="center"><img src="assets/img/logo.png" style="width:64px;border-radius:50%"><h1 style="font-size:22px;margin-top:10px">Admin sign in</h1><p class="muted small">IBA EMBA Alumni Committee</p></div>
+      <div class="center"><img src="assets/img/logo.png" style="width:64px;border-radius:50%"><h1 style="font-size:22px;margin-top:10px">Admin sign in</h1><p class="muted small">IBA EMBA Alumni Forum</p></div>
       <label class="field"><span>Email</span><input class="input" name="email" type="email" autocomplete="username"></label>
       <label class="field"><span>Password</span><input class="input" name="pw" type="password" autocomplete="current-password"></label>
       <div class="hint bad" id="err"></div><button class="btn block">Sign in</button>
@@ -220,7 +220,7 @@
           <div class="hint">Maximum 1,000 per send</div>
           <div id="chk" style="margin-top:10px"></div>
           <div class="row" style="margin-top:12px"><label class="field grow"><span>EMBA batch (optional)</span><select class="select" id="batch"><option value="">Mixed batches</option>${Array.from({ length: 45 }, (_, i) => 45 - i).map((b) => `<option>${b}</option>`).join('')}</select></label>
-            <label class="field grow"><span>Sent as</span><input class="input" value="IBA EMBA Alumni Committee" readonly style="background:var(--tint)"></label></div>
+            <label class="field grow"><span>Sent as</span><input class="input" value="IBA EMBA Alumni Forum" readonly style="background:var(--tint)"></label></div>
           <div class="row" style="margin-top:14px"><button class="btn" id="send" disabled>Send invitations</button><span class="small muted">Each address gets its own email and personal link, valid for ${API.settings.inviteDays} days.</span></div>
         </div></section>
         <div class="stack" style="margin:0">
@@ -233,7 +233,7 @@
     const drawRecent = () => { $('#recent').innerHTML = A.bulkInvites().map((b) => `<div class="checkrow"><span>${fmtDate(b.at)} · ${num(b.sent)} sent</span><span class="muted">${num(b.opened)} opened · ${num(b.joined)} joined</span></div>`).join(''); };
     const prev = (email) => {
       const exp = new Date(Date.now() + API.settings.inviteDays * 864e5);
-      $('#prev').innerHTML = `<h4>You're invited to the IBA Executive Alumni Forum</h4><div class="small muted">From: IBA EMBA Alumni Committee · To: ${esc(email || 'name@example.com')}</div>
+      $('#prev').innerHTML = `<h4>You're invited to the IBA Executive Alumni Forum</h4><div class="small muted">From: IBA EMBA Alumni Forum · To: ${esc(email || 'name@example.com')}</div>
         <p>Dear alumnus,</p><p>You are invited to join the private members portal for Executive MBA alumni of IBA, University of Dhaka. Find batchmates, connect by email or WhatsApp, and find blood donors in an emergency.</p>
         <p>Registration fee: ${taka(API.settings.fee)}, payable by Bangla QR.</p><span class="btn sm" style="cursor:default">Join the portal</span>
         <p class="small muted">This link works only for ${esc(email || 'this address')} and expires on ${fmtDate(exp)}.</p>`;

@@ -134,7 +134,7 @@
       <div class="small muted" style="margin-bottom:16px"><b style="color:var(--ink)">IBA Executive Alumni Forum</b><br>to ${esc(inv.email)} · ${UI.fmtTime(inv.createdAt)}</div>
       <div class="card" style="padding:22px;text-align:center">
         ${by ? avatar(by, 'lg') : '<img src="assets/img/logo.png" style="width:64px;border-radius:50%">'}
-        <p style="margin:14px 0">${by ? `${esc(by.name)} (EMBA ${by.batch}) has invited you` : 'The IBA EMBA Alumni Committee has invited you'} to join the private members portal for IBA Executive MBA alumni.</p>
+        <p style="margin:14px 0">${by ? `${esc(by.name)} (EMBA ${by.batch}) has invited you` : 'The IBA EMBA Alumni Forum has invited you'} to join the private members portal for IBA Executive MBA alumni.</p>
         ${inv.note ? `<p class="note" style="font-style:italic">“${esc(inv.note)}”</p>` : ''}
         <a class="btn block" style="margin:16px 0 10px" href="#/i/${inv.code}">Join the portal</a>
         <div class="small muted">This link works only for ${esc(inv.email)} and expires on ${fmtDate(inv.expiresAt)}.</div>
@@ -145,7 +145,7 @@
   }
   function demoWhatsApp(code) {
     const inv = API.invite(code); if (!inv) return go('#/signin');
-    const by = inv.inviter || { name: 'IBA EMBA Alumni Committee', id: 'x' };
+    const by = inv.inviter || { name: 'IBA EMBA Alumni Forum', id: 'x' };
     const link = `${location.origin}${location.pathname}#/i/${inv.code}`;
     app.innerHTML = `<main class="screen" style="background:#ECE5DD;padding-top:0">
       <div class="topbar" style="background:#075E54;color:#fff;margin:0 -16px;padding:6px 12px"><a class="iconbtn back" style="color:#fff" href="#/demo/email/${code}">${icon('back')}</a>${avatar(by, 'sm')}<div class="grow"><b>${esc(by.name)}</b><div class="small" style="opacity:.8">online</div></div></div>
