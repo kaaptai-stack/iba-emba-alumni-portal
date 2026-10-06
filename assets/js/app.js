@@ -1,6 +1,6 @@
 /* IBA EMBA Alumni Portal — member app (mobile-first SPA, hash routing). */
 (function () {
-  const { icon, esc, avatar, taka, fmtDate, fmtDateTime, ago, waLink, telLink, liLink, toast, download } = UI;
+  const { brand, icon, esc, avatar, taka, fmtDate, fmtDateTime, ago, waLink, telLink, liLink, toast, download } = UI;
   const app = document.getElementById('app');
   const $ = (s, el) => (el || app).querySelector(s);
   const $$ = (s, el) => Array.from((el || app).querySelectorAll(s));
@@ -24,7 +24,7 @@
     [/^setup\/([123])$/, setup], [/^fee$/, fee], [/^pay$/, pay], [/^paid$/, paid],
     [/^directory$/, directory], [/^browse\/(batch|industry)$/, browse], [/^m\/([\w-]+)\/message$/, compose], [/^m\/([\w-]+)$/, profile],
     [/^blood$/, blood], [/^blood\/new$/, bloodNew], [/^blood\/r\/([\w-]+)$/, bloodReq],
-    [/^invite$/, invite], [/^me$/, me], [/^me\/privacy$/, privacy], [/^me\/preview$/, preview], [/^me\/settings$/, notifSettings], [/^notifications$/, notifications],
+    [/^groups$/, groups], [/^invite$/, invite], [/^me$/, me], [/^me\/privacy$/, privacy], [/^me\/preview$/, preview], [/^me\/settings$/, notifSettings], [/^notifications$/, notifications],
   ];
 
   function render() {
@@ -50,7 +50,7 @@
   // ---------- layout pieces ----------
   function tabbar(active) {
     const t = (h, ic, label, key) => `<a href="#/${h}" class="${active === key ? 'on' : ''}">${icon(ic)}<span>${label}</span></a>`;
-    return `<nav class="tabbar">${t('directory', 'users', 'Directory', 'dir')}${t('blood', 'drop', 'Blood', 'blood')}${t('invite', 'invite', 'Invite', 'invite')}${t('me', 'user', 'Me', 'me')}</nav>`;
+    return `<nav class="tabbar">${t('directory', 'users', 'Directory', 'dir')}${t('blood', 'drop', 'Blood', 'blood')}${t('groups', 'groups', 'Groups', 'groups')}${t('invite', 'invite', 'Invite', 'invite')}${t('me', 'user', 'Me', 'me')}</nav>`;
   }
   const backBtn = (href) => `<a class="iconbtn back" href="${href}" aria-label="Back">${icon('back')}</a>`;
   function screen(html, opts) {
@@ -586,6 +586,19 @@ ${[['Member', m.name], ['Email', m.email], ['Amount paid', '৳' + API.settings.
         <p class="cap">Donors follow the hospital's own screening before donating.</p></div>`, { tab: 'blood' });
       if ($('#offer')) $('#offer').onclick = () => { API.offer(r.id); toast('Thank you. Your contact has been shared with the requester.'); render(); };
     }
+  }
+
+  // ---------- groups ----------
+  function groups() {
+    const L = API.groups(); const label = (p) => (API.PLATFORMS[p] || API.PLATFORMS.website).label;
+    screen(`<div class="topbar"><h1>Groups</h1>${bell()}</div>
+      <p class="sub">Official alumni groups. Tap one to open it in ${L.some((g) => g.platform === 'whatsapp') ? 'WhatsApp, Facebook or the app it lives in' : 'the app it lives in'}.</p>
+      ${L.map((g) => g.url
+        ? `<a class="gcard" href="${esc(g.url)}" target="_blank" rel="noopener noreferrer" aria-label="Open ${esc(g.name)} in ${label(g.platform)}">${brand(g.platform)}
+            <span class="grow"><b>${esc(g.name)}</b>${g.description ? `<span class="desc">${esc(g.description)}</span>` : ''}<span class="plat">${label(g.platform)}</span></span>${icon('external', 'go')}</a>`
+        : `<div class="gcard off">${brand(g.platform)}<span class="grow"><b>${esc(g.name)}</b>${g.description ? `<span class="desc">${esc(g.description)}</span>` : ''}<span class="plat">Temporarily unavailable</span></span>${icon('lock', 'go')}</div>`).join('')
+        || '<div class="empty">No groups yet. The alumni committee will add them here.</div>'}
+      <p class="cap">Groups are run by the alumni committee. Contact details you share in a group follow that app's own privacy rules, not the portal's.</p>`, { tab: 'groups' });
   }
 
   // ---------- invite ----------

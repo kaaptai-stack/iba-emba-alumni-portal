@@ -179,10 +179,48 @@
         { id: 'an1', title: 'Annual reunion on 14 November', body: 'Save the date: the EMBA alumni reunion will be held at the IBA auditorium on 14 November 2026, 6 PM onwards.', at: isoDaysAgo(3), sent: 1190 },
       ],
       audit,
+      groups: seedGroups(),
       settings: { fee: 200, eligibilityDays: 90, msgLimit: 20, inviteDays: 7, requestHours: 72, approvalForMemberInvites: true },
       session: null,
       admin: { email: 'admin@ibaexecutivemba.com', password: 'admin1234', signedIn: false },
     };
+  }
+
+  // ---------- community groups ----------
+  const PLATFORMS = {
+    whatsapp: { label: 'WhatsApp', match: /(chat\.whatsapp\.com|wa\.me|whatsapp\.com)/ },
+    facebook: { label: 'Facebook', match: /(facebook\.com|fb\.com|fb\.me)/ },
+    messenger: { label: 'Messenger', match: /(m\.me|messenger\.com)/ },
+    telegram: { label: 'Telegram', match: /(t\.me|telegram\.me|telegram\.org)/ },
+    linkedin: { label: 'LinkedIn', match: /linkedin\.com/ },
+    viber: { label: 'Viber', match: /(viber\.com|vb\.me|invite\.viber)/ },
+    signal: { label: 'Signal', match: /signal\.(group|me|org)/ },
+    discord: { label: 'Discord', match: /(discord\.gg|discord\.com)/ },
+    website: { label: 'Website', match: /./ },
+  };
+  function detectPlatform(url) {
+    const u = String(url).toLowerCase();
+    return Object.keys(PLATFORMS).find((k) => k !== 'website' && PLATFORMS[k].match.test(u)) || 'website';
+  }
+  /** Only plain web links are allowed, so a group link can never run script. */
+  function cleanUrl(url) {
+    let u = String(url || '').trim();
+    if (!u) throw new Error('Add the group link.');
+    if (!/^[a-z][a-z0-9+.-]*:/i.test(u)) u = 'https://' + u.replace(/^\/+/, '');
+    let parsed; try { parsed = new URL(u); } catch (e) { throw new Error('That link does not look right.'); }
+    if (!/^https?:$/.test(parsed.protocol) || !parsed.hostname.includes('.')) throw new Error('Use a web link starting with https://');
+    return parsed.href;
+  }
+  function seedGroups() {
+    const g = (id, name, platform, url, description, status, days) => ({ id, name, platform, url, description, status, createdAt: isoDaysAgo(days), createdBy: 'Admin' });
+    return [
+      g('g-all', 'IBA EMBA Alumni · all batches', 'whatsapp', 'https://chat.whatsapp.com/IBAEMBAalumniSample', 'Main community for announcements and quick help.', 'active', 60),
+      g('g-fb', 'IBA EMBA Alumni Network', 'facebook', 'https://www.facebook.com/groups/ibaembaalumni.sample', 'Photos, events and long-form posts.', 'active', 58),
+      g('g-blood', 'EMBA Blood Donors', 'whatsapp', 'https://chat.whatsapp.com/EMBABloodDonorsSample', 'For urgent blood requests. Please keep it on-topic.', 'active', 40),
+      g('g-li', 'IBA EMBA Professionals', 'linkedin', 'https://www.linkedin.com/groups/0000000-sample/', 'Jobs, hiring and career moves.', 'active', 35),
+      g('g-tg', 'EMBA Sports and Golf', 'telegram', 'https://t.me/embasportssample', 'Cricket, golf and badminton meet-ups.', 'disabled', 20),
+      g('g-reunion', 'Reunion 2026 volunteers', 'messenger', 'https://m.me/j/reunion2026sample', 'Organising team for the November reunion.', 'hidden', 5),
+    ];
   }
 
   // ---------- persistence ----------
@@ -190,6 +228,7 @@
   function load() {
     try { state = JSON.parse(localStorage.getItem(KEY)); } catch (e) { state = null; }
     if (!state || state.version !== 1) { state = seed(); save(); }
+    if (!state.groups) { state.groups = seedGroups(); save(); } // data saved before groups existed
     return state;
   }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* quota or private mode */ } }
@@ -415,6 +454,10 @@
     markRead() { const me = API.me(); state.notifications.forEach((n) => { if (n.to === me.id) n.read = true; }); save(); },
     announcements() { return state.announcements; },
 
+    // community groups: members never receive hidden groups, or links of disabled ones
+    PLATFORMS, detectPlatform,
+    groups() { return state.groups.filter((g) => g.status !== 'hidden').map((g) => Object.assign({}, g, { url: g.status === 'active' ? g.url : null })); },
+
     exportMyData() {
       const me = API.me();
       const copy = Object.assign({}, me); delete copy.password;
@@ -491,6 +534,18 @@
         recipients.forEach((m) => notify(m.id, { kind: 'announcement', text: title }));
         audit('Sent announcement', title, recipients.length + ' recipients'); save();
       },
+      groups() { return state.groups; },
+      saveGroup(d) {
+        const name = String(d.name || '').trim(); if (!name) throw new Error('Add the group name.');
+        const url = cleanUrl(d.url); const platform = PLATFORMS[d.platform] ? d.platform : detectPlatform(url);
+        const fields = { name, url, platform, description: String(d.description || '').trim() };
+        if (d.id) { Object.assign(state.groups.find((g) => g.id === d.id), fields); audit('Edited group', name); }
+        else { state.groups.push(Object.assign({ id: uid('g'), status: d.status || 'active', createdAt: new Date().toISOString(), createdBy: 'Admin' }, fields)); audit('Added group', name, PLATFORMS[platform].label); }
+        save();
+      },
+      setGroupStatus(id, status) { const g = state.groups.find((x) => x.id === id); g.status = status; audit({ active: 'Enabled group', disabled: 'Disabled group', hidden: 'Hid group' }[status], g.name); save(); },
+      moveGroup(id, dir) { const i = state.groups.findIndex((x) => x.id === id); const j = i + dir; if (j < 0 || j >= state.groups.length) return; [state.groups[i], state.groups[j]] = [state.groups[j], state.groups[i]]; save(); },
+      deleteGroup(id) { const g = state.groups.find((x) => x.id === id); state.groups = state.groups.filter((x) => x.id !== id); audit('Deleted group', g.name); save(); },
       saveSettings(s) { Object.assign(state.settings, s); audit('Changed settings', 'Portal settings', Object.keys(s).join(', ')); save(); },
       reset() { API.reset(); },
     },

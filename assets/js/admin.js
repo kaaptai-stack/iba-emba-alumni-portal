@@ -1,6 +1,6 @@
 /* IBA EMBA Alumni Portal — admin panel (desktop). */
 (function () {
-  const { icon, esc, avatar, taka, fmtDate, fmtDateTime, ago, toast, download } = UI;
+  const { brand, icon, esc, avatar, taka, fmtDate, fmtDateTime, ago, toast, download } = UI;
   const A = API.admin;
   const root = document.getElementById('admin');
   const $ = (s, el) => (el || root).querySelector(s);
@@ -13,7 +13,7 @@
   function parse() { const raw = location.hash.replace(/^#\/?/, ''); const [p, qs] = raw.split('?'); return { path: p || 'dashboard', q: Object.fromEntries(new URLSearchParams(qs || '')) }; }
   const routes = [
     [/^dashboard$/, dashboard], [/^members$/, members], [/^members\/([\w-]+)$/, memberDetail], [/^invite$/, invite], [/^payments$/, payments],
-    [/^approvals$/, approvals], [/^reports$/, reports], [/^blood$/, bloodReqs], [/^announcements$/, announcements], [/^audit$/, auditLog], [/^settings$/, settings],
+    [/^approvals$/, approvals], [/^reports$/, reports], [/^blood$/, bloodReqs], [/^groups$/, groupsPage], [/^announcements$/, announcements], [/^audit$/, auditLog], [/^settings$/, settings],
   ];
   function render() {
     timers.forEach(clearInterval); timers = [];
@@ -42,7 +42,7 @@
       ${L('dashboard', 'grid', 'Dashboard')}${L('members', 'users', 'Members', `<span class="n">${num(d.total)}</span>`)}${L('invite', 'invite', 'Invite members')}
       ${L('payments', 'card', 'Payments')}${L('approvals', 'check', 'Approval queue', d.pending ? `<span class="badge">${d.pending}</span>` : '')}
       ${L('reports', 'flag', 'Reports', d.openReports ? `<span class="badge red">${d.openReports}</span>` : '')}${L('blood', 'drop', 'Blood requests', d.reqOpen ? `<span class="n">${d.reqOpen} open</span>` : '')}
-      ${L('announcements', 'megaphone', 'Announcements')}${L('audit', 'list', 'Audit log')}${L('settings', 'cog', 'Settings')}</nav>
+      ${L('groups', 'groups', 'Groups', `<span class="n">${A.groups().filter((g) => g.status === 'active').length}</span>`)}${L('announcements', 'megaphone', 'Announcements')}${L('audit', 'list', 'Audit log')}${L('settings', 'cog', 'Settings')}</nav>
       <div class="foot"><a href="index.html" target="_blank">Open member app ↗</a><button id="reset">Reset demo data</button><button id="out">Sign out</button></div></aside>
       <main class="main" id="main"></main></div>`;
     $('#out').onclick = () => { A.signOut(); render(); };
@@ -313,6 +313,49 @@
       ${L.map((r) => `<tr><td><b style="color:var(--crimson)">${esc(r.group)}</b> · ${r.units} unit${r.units > 1 ? 's' : ''}</td><td>${esc(r.hospital)}, ${esc(r.city)}</td><td>${esc(nameOf(r.by))}</td><td>${ago(r.createdAt)}</td><td>${r.notified}</td><td>${r.offers.length}</td>
         <td><span class="tag ${r.status === 'open' ? 'red' : r.status === 'fulfilled' ? 'green' : ''}">${esc(r.status)}</span></td></tr>`).join('') || '<tr><td colspan="7" class="center muted" style="padding:30px">No requests yet.</td></tr>'}
       </tbody></table></section>`);
+  }
+
+  // ---------- groups ----------
+  function groupsPage() {
+    const G = A.groups(); const P = API.PLATFORMS;
+    const count = (st) => G.filter((g) => g.status === st).length;
+    main(`<div class="ph"><div class="grow"><h1>Groups</h1><div>${G.length} groups · ${count('active')} active · ${count('disabled')} disabled · ${count('hidden')} hidden</div></div>
+        <button class="btn" id="add">${icon('plus')}Add group</button></div>
+      <section class="panel"><table><thead><tr><th style="width:56px">Order</th><th>Group</th><th>Platform</th><th>Link</th><th>Shown to members as</th><th></th></tr></thead><tbody>
+      ${G.map((g, i) => `<tr>
+        <td><div class="row" style="gap:2px"><button class="iconbtn sm" data-mv="${g.id}" data-d="-1" ${i === 0 ? 'disabled' : ''} aria-label="Move up">${icon('up')}</button><button class="iconbtn sm" data-mv="${g.id}" data-d="1" ${i === G.length - 1 ? 'disabled' : ''} aria-label="Move down">${icon('down')}</button></div></td>
+        <td><div class="who" style="${g.status === 'active' ? '' : 'opacity:.55'}">${brand(g.platform, 'sm')}<div><b>${esc(g.name)}</b><small>${esc(g.description)}</small></div></div></td>
+        <td>${(P[g.platform] || P.website).label}</td>
+        <td><a href="${esc(g.url)}" target="_blank" rel="noopener noreferrer" class="small" style="display:inline-block;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:middle">${esc(g.url.replace(/^https?:\/\//, ''))}</a></td>
+        <td><div class="seg">${[['active', 'Active'], ['disabled', 'Disabled'], ['hidden', 'Hidden']].map(([k, l]) => `<button data-st="${k}" data-id="${g.id}" class="${g.status === k ? 'on' : ''}">${l}</button>`).join('')}</div></td>
+        <td style="white-space:nowrap"><button class="pill" data-ed="${g.id}">${icon('edit')}Edit</button> <button class="pill" style="color:var(--crimson)" data-del="${g.id}">${icon('trash')}</button></td></tr>`).join('') || '<tr><td colspan="6" class="center muted" style="padding:30px">No groups yet. Add the first one.</td></tr>'}
+      </tbody></table></section>
+      <div class="small muted" style="margin-top:12px;line-height:1.7"><b>Active</b>: listed in the member app's Groups tab and opens the group. <b>Disabled</b>: still listed but greyed out, and the link is not sent to members. <b>Hidden</b>: not shown to members at all. Every change is written to the audit log.</div>`);
+    $('#add').onclick = () => groupForm();
+    $$('[data-ed]').forEach((b) => { b.onclick = () => groupForm(G.find((g) => g.id === b.dataset.ed)); });
+    $$('[data-st]').forEach((b) => { b.onclick = () => { const g = G.find((x) => x.id === b.dataset.id); if (g.status === b.dataset.st) return; A.setGroupStatus(g.id, b.dataset.st); toast(`${g.name}: ${b.textContent.toLowerCase()}`); render(); }; });
+    $$('[data-mv]').forEach((b) => { b.onclick = () => { A.moveGroup(b.dataset.mv, +b.dataset.d); render(); }; });
+    $$('[data-del]').forEach((b) => { b.onclick = () => { const g = G.find((x) => x.id === b.dataset.del); if (confirm(`Delete “${g.name}”? Members will no longer see it. To remove it only for now, use Hidden instead.`)) { A.deleteGroup(g.id); toast('Group deleted'); render(); } }; });
+  }
+  function groupForm(g) {
+    const P = API.PLATFORMS; const editing = !!g; g = g || { name: '', url: '', platform: '', description: '', status: 'active' };
+    const md = modal(`<h3>${editing ? 'Edit group' : 'Add group'}</h3><form id="gf" class="stack" novalidate>
+      <label class="field"><span>Group name</span><input class="input" name="name" maxlength="80" value="${esc(g.name)}" placeholder="e.g. IBA EMBA Alumni · all batches"></label>
+      <label class="field"><span>Group link</span><input class="input" name="url" value="${esc(g.url)}" placeholder="https://chat.whatsapp.com/..."><div class="hint">The invite or page link from WhatsApp, Facebook, Telegram, LinkedIn or any website.</div></label>
+      <div class="row" style="align-items:flex-end"><span id="pv">${brand(g.platform || 'website')}</span><label class="field grow"><span>Platform (detected from the link)</span><select class="select" name="platform"><option value="">Detect automatically</option>${Object.keys(P).map((k) => `<option value="${k}" ${editing && g.platform === k ? 'selected' : ''}>${P[k].label}</option>`).join('')}</select></label></div>
+      <label class="field"><span>Short description (optional)</span><input class="input" name="description" maxlength="120" value="${esc(g.description)}" placeholder="What the group is for"></label>
+      ${editing ? '' : `<label class="field"><span>Status</span><select class="select" name="status"><option value="active">Active: shown to all members</option><option value="disabled">Disabled: shown greyed out</option><option value="hidden">Hidden: not shown yet</option></select></label>`}
+      <div class="hint bad" id="err"></div>
+      <div class="row" style="justify-content:flex-end"><button type="button" class="btn ghost" data-close>Cancel</button><button class="btn">${editing ? 'Save changes' : 'Add group'}</button></div></form>`);
+    const f = $('#gf', md.el);
+    const pv = () => { $('#pv', md.el).innerHTML = brand(f.platform.value || API.detectPlatform(f.url.value)); };
+    f.url.oninput = pv; f.platform.onchange = pv; pv();
+    f.onsubmit = (e) => {
+      e.preventDefault();
+      try { A.saveGroup({ id: editing ? g.id : null, name: f.name.value, url: f.url.value, platform: f.platform.value, description: f.description.value, status: editing ? g.status : f.status.value }); md.close(); toast(editing ? 'Group saved' : 'Group added'); render(); }
+      catch (err) { $('#err', md.el).textContent = err.message; }
+    };
+    f.name.focus();
   }
 
   // ---------- announcements, audit, settings ----------

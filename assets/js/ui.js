@@ -38,8 +38,21 @@
     megaphone: '<path d="M3 10v4h4l8 5V5L7 10z"/><path d="M19 9a4 4 0 010 6"/>',
     list: '<path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/>',
     cog: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 01-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 010-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 014 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 010 4h-.1a1.7 1.7 0 00-1.5 1z"/>',
+    telegram: '<path d="M21 4L3 11l6 2.5M21 4l-3 16-9-6.5M21 4L9 13.5V19l3-3.5"/>',
+    messenger: '<path d="M12 3C7 3 3 6.7 3 11.4c0 2.6 1.2 4.9 3.2 6.4V21l2.9-1.6c.9.3 1.9.4 2.9.4 5 0 9-3.7 9-8.4S17 3 12 3z"/><path d="M7.5 13.5l3-3.2 2.2 2 3.8-2.8-3 3.3-2.2-2z"/>',
+    viber: '<path d="M12 3c-5 0-8 1.5-8 7.5 0 3.5 1 5.5 3 6.5V21l3-2.5c6.5.5 10-1 10-8C20 4.5 17 3 12 3z"/><path d="M9.5 8.5c0 2.5 2 5 4.5 5.5l.8-1.2-1.5-.8-.8.6c-.8-.4-1.5-1.1-1.8-1.9l.6-.8-.8-1.5z"/>',
+    signal: '<path d="M12 3a9 9 0 00-7.8 13.5L3 21l4.5-1.2A9 9 0 1012 3z"/>',
+    discord: '<path d="M7 6.5c3-1 7-1 10 0 1.8 2.6 2.7 5.6 2.5 9-1.5 1.1-3 1.8-4.5 2.2l-1-1.7M7 6.5C5.2 9.1 4.3 12.1 4.5 15.5 6 16.6 7.5 17.3 9 17.7l1-1.7M7.5 15c3 1.3 6 1.3 9 0"/><circle cx="9.5" cy="12" r=".8"/><circle cx="14.5" cy="12" r=".8"/>',
+    globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 3.5 5.5 3.5 9s-1 6.5-3.5 9c-2.5-2.5-3.5-5.5-3.5-9s1-6.5 3.5-9z"/>',
+    groups: '<circle cx="12" cy="8" r="3"/><circle cx="5" cy="10" r="2.2"/><circle cx="19" cy="10" r="2.2"/><path d="M6.5 20a5.5 5.5 0 0111 0M1.5 19a3.6 3.6 0 015.5-3M22.5 19a3.6 3.6 0 00-5.5-3"/>',
+    external: '<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"/>',
+    eyeoff: '<path d="M3 3l18 18M10.6 6.1A10 10 0 0112 6c6.5 0 10 6 10 6a17 17 0 01-3.2 3.9M6.6 6.6A16.5 16.5 0 002 12s3.5 6 10 6a9.6 9.6 0 004.4-1.1M9.9 9.9a3 3 0 004.2 4.2"/>',
+    up: '<path d="M6 15l6-6 6 6"/>',
     upload: '<path d="M12 20V9M7 14l5-5 5 5M5 4h14"/>',
   };
+  const BRAND = { whatsapp: ['wa', '#25D366'], facebook: ['facebook', '#1877F2'], messenger: ['messenger', '#0084FF'], telegram: ['telegram', '#229ED9'], linkedin: ['linkedin', '#0A66C2'], viber: ['viber', '#7360F2'], signal: ['signal', '#3A76F0'], discord: ['discord', '#5865F2'], website: ['globe', '#34428A'] };
+  /** Round, brand-coloured icon for a group's platform. */
+  const brand = (platform, size) => { const [ic, col] = BRAND[platform] || BRAND.website; return `<span class="brand ${size || ''}" style="background:${col}" aria-hidden="true">${icon(ic)}</span>`; };
   const icon = (n, cls) => `<svg class="ico ${cls || ''}" viewBox="0 0 24 24" aria-hidden="true">${P[n] || ''}</svg>`;
 
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -96,5 +109,5 @@
     return lines.slice(1).map((l) => { const v = split(l); const o = {}; head.forEach((h, i) => { o[h] = v[i]; }); return o; });
   }
 
-  window.UI = { icon, esc, initials, avatar, taka, fmtDate, fmtTime, fmtDateTime, ago, waLink, telLink, liLink, toast, download, compressPhoto, parseCSV };
+  window.UI = { brand, icon, esc, initials, avatar, taka, fmtDate, fmtTime, fmtDateTime, ago, waLink, telLink, liLink, toast, download, compressPhoto, parseCSV };
 })();

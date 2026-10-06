@@ -92,3 +92,8 @@ button { cursor: pointer; }
 @keyframes tin { from { opacity: 0; transform: translateY(8px); } }
 @keyframes spin { to { transform: rotate(360deg); } }
 .spinner { width: 14px; height: 14px; border: 2px solid var(--line-2); border-top-color: var(--blue); border-radius: 50%; animation: spin .8s linear infinite; display: inline-block; }
+
+/* platform brand badge (groups) */
+.brand { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; flex: none; color: #fff; }
+.brand .ico { width: 22px; height: 22px; stroke-width: 1.9; }
+.brand.sm { width: 30px; height: 30px; } .brand.sm .ico { width: 16px; height: 16px; }

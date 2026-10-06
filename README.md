@@ -27,6 +27,7 @@ Demo logins (sample data):
 | 5 Directory | one search box with typo tolerance, filter sheet with live count, removable chips, infinite scroll (20 at a time) |
 | 6 Profile and contact | contact buttons only for fields the member shares; WhatsApp with pre-filled greeting; portal email with daily limit; report profile |
 | 7 Blood finder | donors by group/city/area, eligibility from last donation (never shown), urgent request with notified-donor count, offers, mark as fulfilled |
+| Groups (added) | 5th footer tab: official groups with a platform icon (WhatsApp, Facebook, Messenger, Telegram, LinkedIn, Viber, Signal, Discord, website); tapping opens the group in its app. Admin → Groups to add, edit, reorder, enable, disable, hide or delete |
 | 8 Privacy and account | completeness meter, privacy switches, preview as others see you, pause listing, download data, delete account |
 | 9 Admin | dashboard, members (filters, pagination, enable/disable with reason, CSV export), member profile, bulk invite (dedupe, typo check, skip existing), payments (mark paid manually, look up transaction ID), approvals, reports, blood requests, announcements, audit log, settings |
 

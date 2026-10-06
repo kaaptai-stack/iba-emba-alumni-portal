@@ -92,3 +92,7 @@ tr:hover td { background: #FAFBFC; }
   .tiles { grid-template-columns: repeat(2, 1fr); }
   .panel { overflow-x: auto; }
 }
+.iconbtn.sm { width: 26px; height: 26px; border: 0; background: none; border-radius: 6px; display: grid; place-items: center; color: var(--ink-3); cursor: pointer; }
+.iconbtn.sm:hover:not(:disabled) { background: var(--tint); color: var(--ink); }
+.iconbtn.sm:disabled { opacity: .3; cursor: default; }
+.pill .ico { width: 13px; height: 13px; }
