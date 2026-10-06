@@ -1,0 +1,9 @@
+{
+  "name": "IBA EMBA Alumni Portal",
+  "short_name": "IBA EMBA",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#34428A",
+  "icons": [{ "src": "assets/img/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" }]
+}
