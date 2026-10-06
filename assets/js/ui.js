@@ -52,7 +52,7 @@
   };
   const BRAND = { whatsapp: ['wa', '#25D366'], facebook: ['facebook', '#1877F2'], messenger: ['messenger', '#0084FF'], telegram: ['telegram', '#229ED9'], linkedin: ['linkedin', '#0A66C2'], viber: ['viber', '#7360F2'], signal: ['signal', '#3A76F0'], discord: ['discord', '#5865F2'], website: ['globe', '#34428A'] };
   /** Round, brand-coloured icon for a group's platform. */
-  const brand = (platform, size) => { const [ic, col] = BRAND[platform] || BRAND.website; return `<span class="brand ${size || ''}" style="background:${col}" aria-hidden="true">${icon(ic)}</span>`; };
+  const brand = (platform, size) => { const [ic, col] = BRAND[platform] || BRAND.website; return `<span class="pbadge ${size || ''}" style="background:${col}" aria-hidden="true">${icon(ic)}</span>`; };
   const icon = (n, cls) => `<svg class="ico ${cls || ''}" viewBox="0 0 24 24" aria-hidden="true">${P[n] || ''}</svg>`;
 
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));

@@ -163,7 +163,7 @@
     const hid = (k) => (m.visible[k] ? '' : '<span class="hid">Hidden from members</span>');
     const ph = m.phoneSameAsWhatsapp ? m.whatsapp : m.phone;
     const inv = A.invites().find((i) => i.email === m.email);
-    const log = A.audit().filter((a) => a.target === m.name).map((a) => ({ at: a.at, t: a.action + (a.detail ? ' · ' + a.detail : '') }));
+    const log = A.audit().filter((a) => a.target === m.name && a.action !== 'Created account').map((a) => ({ at: a.at, t: a.action + (a.detail ? ' · ' + a.detail : '') }));
     const acts = [...log];
     if (m.paid) acts.push({ at: m.paidOn, t: 'Paid registration fee' });
     if (m.setupDone) acts.push({ at: m.paidOn || m.registeredOn, t: 'Completed profile set-up' });
