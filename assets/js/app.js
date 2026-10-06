@@ -1,4 +1,4 @@
-/* IBA EMBA Alumni Portal — member app (mobile-first SPA, hash routing). */
+/* IBA Executive Alumni Forum — member app (mobile-first SPA, hash routing). */
 (function () {
   const { brand, icon, esc, avatar, taka, fmtDate, fmtDateTime, ago, waLink, telLink, liLink, toast, download } = UI;
   const app = document.getElementById('app');
@@ -71,7 +71,7 @@
   }
   function contactPills(p, opts) {
     opts = opts || {};
-    const greet = `Assalamu alaikum ${first(p.name)}, I found you on the IBA EMBA alumni portal.`;
+    const greet = `Assalamu alaikum ${first(p.name)}, I found you on the IBA Executive Alumni Forum.`;
     let h = `<a class="pill" href="#/m/${p.id}/message">${icon('mail')}Email</a>`;
     if (p.whatsapp) h += `<a class="pill wa" href="${waLink(p.whatsapp, greet)}" target="_blank" rel="noopener">${icon('wa')}WhatsApp</a>`;
     if (p.phone) h += `<a class="pill" href="${telLink(p.phone)}">${icon('phone')}Call</a>`;
@@ -94,7 +94,7 @@
     app.innerHTML = `<div class="splash">
       <div style="margin-top:auto"></div>
       <div class="logo"><img src="assets/img/logo.png" alt="IBA Executive MBA"></div>
-      <h1>IBA EMBA<br>Alumni Portal</h1>
+      <h1>IBA Executive<br>Alumni Forum</h1>
       <p>Executive MBA alumni of the Institute of Business Administration, University of Dhaka</p>
       <div class="foot"><div class="loadbar"><i></i></div><div class="small muted">Members only · by invitation</div></div>
     </div>`;
@@ -105,7 +105,7 @@
   function signin() {
     if (API.me()) return go('#/directory');
     screen(`
-      <div class="auth-head"><img class="logo-sm" src="assets/img/logo.png" alt=""><h1>Sign in</h1><p>IBA EMBA Alumni Portal</p></div>
+      <div class="auth-head"><img class="logo-sm" src="assets/img/logo.png" alt=""><h1>Sign in</h1><p>IBA Executive Alumni Forum</p></div>
       <form id="f" class="stack" novalidate>
         <label class="field"><span>Email</span><input class="input" name="email" type="email" autocomplete="email" required></label>
         <label class="field"><span>Password</span><input class="input" name="pw" type="password" autocomplete="current-password" required></label>
@@ -114,8 +114,7 @@
         <button type="button" class="btn link" id="forgot" style="margin:14px auto 0;display:block">Forgot password?</button>
       </form>
       <div class="footer-cta"><p class="cap">New here? Membership is by invitation from an alumnus or the alumni committee. Open the personal link in your invite to join.</p>
-      <div class="demo-note" style="margin-top:12px">Demo: sign in as <b>farhana.rahman@gmail.com</b> / <b>demo1234</b>, or open the <a href="#/demo/email/K7F2Q9">invite for Rafiq Ahmed</a> to try joining.</div>
-      <p class="cap">Alumni committee? <a href="admin.html">Admin sign in</a></p></div>`);
+      <div class="demo-note" style="margin-top:12px">Demo: sign in as <b>farhana.rahman@gmail.com</b> / <b>demo1234</b>, or open the <a href="#/demo/email/K7F2Q9">invite for Rafiq Ahmed</a> to try joining.</div></div>`);
     $('#f').onsubmit = (e) => {
       e.preventDefault(); const f = e.target;
       try { API.signIn(f.email.value, f.pw.value); go('#/directory'); }
@@ -131,8 +130,8 @@
     app.innerHTML = `<main class="screen" style="background:#fff">
       <div class="topbar"><a class="iconbtn back" href="#/signin">${icon('back')}</a><h2>Inbox</h2></div>
       <div class="banner blue">Demo: this is the email the invitee receives in Gmail, Yahoo or any mail app.</div>
-      <h2 style="font-size:19px;margin:8px 0 6px">${by ? esc(by.name) + ' invited you to the' : 'You\'re invited to the'} IBA EMBA alumni portal</h2>
-      <div class="small muted" style="margin-bottom:16px"><b style="color:var(--ink)">IBA EMBA Alumni Portal</b><br>to ${esc(inv.email)} · ${UI.fmtTime(inv.createdAt)}</div>
+      <h2 style="font-size:19px;margin:8px 0 6px">${by ? esc(by.name) + ' invited you to the' : 'You\'re invited to the'} IBA Executive Alumni Forum</h2>
+      <div class="small muted" style="margin-bottom:16px"><b style="color:var(--ink)">IBA Executive Alumni Forum</b><br>to ${esc(inv.email)} · ${UI.fmtTime(inv.createdAt)}</div>
       <div class="card" style="padding:22px;text-align:center">
         ${by ? avatar(by, 'lg') : '<img src="assets/img/logo.png" style="width:64px;border-radius:50%">'}
         <p style="margin:14px 0">${by ? `${esc(by.name)} (EMBA ${by.batch}) has invited you` : 'The IBA EMBA Alumni Committee has invited you'} to join the private members portal for IBA Executive MBA alumni.</p>
@@ -151,10 +150,10 @@
     app.innerHTML = `<main class="screen" style="background:#ECE5DD;padding-top:0">
       <div class="topbar" style="background:#075E54;color:#fff;margin:0 -16px;padding:6px 12px"><a class="iconbtn back" style="color:#fff" href="#/demo/email/${code}">${icon('back')}</a>${avatar(by, 'sm')}<div class="grow"><b>${esc(by.name)}</b><div class="small" style="opacity:.8">online</div></div></div>
       <div class="center small" style="margin:14px 0"><span style="background:#fff;padding:3px 10px;border-radius:8px">Today</span></div>
-      <div style="background:#fff;border-radius:10px;padding:8px 10px;max-width:85%;margin-left:auto;background:#DCF8C6">${esc(first(inv.name) || 'Hi')}${inv.name ? ' bhai' : ''}, sending you the alumni portal invite<div class="small muted" style="text-align:right">9:10 AM</div></div>
+      <div style="background:#fff;border-radius:10px;padding:8px 10px;max-width:85%;margin-left:auto;background:#DCF8C6">${esc(first(inv.name) || 'Hi')}${inv.name ? ' bhai' : ''}, sending you the alumni forum invite<div class="small muted" style="text-align:right">9:10 AM</div></div>
       <div style="border-radius:10px;padding:8px;max-width:85%;margin:8px 0 0 auto;background:#DCF8C6">
-        <div style="background:#fff;border-radius:8px;padding:10px;display:flex;gap:10px;align-items:center"><img src="assets/img/logo.png" style="width:40px;border-radius:6px"><div><b>IBA EMBA Alumni Portal</b><div class="small">You're invited to join<br>ibaexecutivemba.com</div></div></div>
-        <p style="margin:8px 0">Assalamu alaikum! I've invited you to the IBA EMBA alumni portal. Join here:<br><a href="#/i/${inv.code}" style="word-break:break-all">${esc(link)}</a></p>
+        <div style="background:#fff;border-radius:8px;padding:10px;display:flex;gap:10px;align-items:center"><img src="assets/img/logo.png" style="width:40px;border-radius:6px"><div><b>IBA Executive Alumni Forum</b><div class="small">You're invited to join<br>ibaexecutivemba.com</div></div></div>
+        <p style="margin:8px 0">Hello! I’ve invited you to the IBA Executive Alumni Forum. Join here:<br><a href="#/i/${inv.code}" style="word-break:break-all">${esc(link)}</a></p>
         <div class="small">Link works for ${esc(inv.email)} and expires on ${fmtDate(inv.expiresAt).replace(/ \d{4}$/, '')}.</div>
         <div class="small muted" style="text-align:right">9:12 AM ✓✓</div>
       </div>
@@ -232,22 +231,29 @@
 
     if (step === 1) {
       const years = []; for (let y = 2026; y >= 1985; y--) years.push(y);
-      const batches = []; for (let b = 60; b >= 1; b--) batches.push(b);
+      const batches = []; for (let b = 45; b >= 1; b--) batches.push(b);
       screen(`${head}<p class="sub">Step 1 of 3 · Basics</p>
         <div class="photo-pick"><label for="ph" id="phl">${m.photo ? `<img src="${m.photo}" alt="">` : 'Add photo'}</label><input id="ph" type="file" accept="image/*" hidden><div class="hint center">A clear face photo helps batchmates recognise you</div></div>
         <div class="stack" style="margin-top:12px">
           <label class="field"><span>Full name</span><input class="input" id="name" value="${esc(m.name)}" autocomplete="name"></label>
           <label class="field"><span>EMBA batch</span><select class="select" id="batch">${batches.map((b) => `<option value="${b}" ${m.batch === b ? 'selected' : ''}>EMBA ${b}</option>`).join('')}</select></label>
           <label class="field"><span>Graduation year</span><select class="select" id="grad">${years.map((y) => `<option ${m.gradYear === y ? 'selected' : ''}>${y}</option>`).join('')}</select></label>
-          <label class="field"><span>City</span><select class="select" id="city">${API.CITIES.map((c) => `<option ${m.city === c ? 'selected' : ''}>${c}</option>`).join('')}</select></label>
-          <label class="field"><span>Area</span><select class="select" id="area">${API.AREAS[m.city || 'Dhaka'].map((a) => `<option ${m.area === a ? 'selected' : ''}>${a}</option>`).join('')}</select></label>
+          <label class="field"><span>Country</span><select class="select" id="country">${API.COUNTRIES.map((c) => `<option ${(m.country || 'Bangladesh') === c ? 'selected' : ''}>${c}</option>`).join('')}</select></label>
+          <label class="field"><span>City</span><span id="citybox"></span></label>
         </div>${cta(edit ? 'Save and continue' : 'Continue')}`);
       let photo = m.photo;
       $('#ph').onchange = async (e) => { const f = e.target.files[0]; if (!f) return; try { photo = await UI.compressPhoto(f); $('#phl').innerHTML = `<img src="${photo}" alt="">`; } catch (err) { toast('Could not read that image.', true); } };
-      $('#city').onchange = (e) => { $('#area').innerHTML = API.AREAS[e.target.value].map((a) => `<option>${a}</option>`).join(''); };
+      // Bangladesh: pick a city; abroad: type it
+      const cityField = (country, val) => {
+        $('#citybox').innerHTML = country === 'Bangladesh'
+          ? `<select class="select" id="city">${API.CITIES.map((c) => `<option ${val === c ? 'selected' : ''}>${c}</option>`).join('')}</select>`
+          : `<input class="input" id="city" value="${esc(API.CITIES.includes(val) ? '' : val || '')}" placeholder="e.g. Toronto" autocomplete="address-level2">`;
+      };
+      cityField(m.country || 'Bangladesh', m.city);
+      $('#country').onchange = (e) => cityField(e.target.value, '');
       $('#save').onclick = () => {
         const name = $('#name').value.trim(); if (!name) return toast('Add your full name.', true);
-        API.updateMe({ photo, name, batch: +$('#batch').value, gradYear: +$('#grad').value, city: $('#city').value, area: $('#area').value }); next();
+        API.updateMe({ photo, name, batch: +$('#batch').value, gradYear: +$('#grad').value, country: $('#country').value, city: $('#city').value.trim() }); next();
       };
     }
     if (step === 2) {
@@ -328,7 +334,7 @@
     const m = API.me(); if (m.paid) return go('#/paid');
     const p = API.startPayment();
     screen(`<div class="topbar">${backBtn('#/fee')}<h2>Scan to pay</h2></div>
-      <div class="center"><div class="small muted">Amount</div><div style="font-family:var(--serif);font-size:30px;font-weight:700">${taka(p.amount)}.00</div><div class="small muted">IBA EMBA Alumni Portal · Ref ${p.ref}</div></div>
+      <div class="center"><div class="small muted">Amount</div><div style="font-family:var(--serif);font-size:30px;font-weight:700">${taka(p.amount)}.00</div><div class="small muted">IBA Executive Alumni Forum · Ref ${p.ref}</div></div>
       <div class="qrbox"><div id="qr"></div><img class="qrlogo" src="assets/img/icon-192.png" alt=""></div>
       <div class="center" style="color:var(--crimson);font-weight:600;font-size:13px">Bangla QR</div>
       <div class="steps"><ol><li>Open any bank or MFS app with Bangla QR</li><li>Scan this code and confirm ${taka(p.amount)}</li><li>This screen updates by itself once paid</li></ol></div>
@@ -350,7 +356,7 @@
   }
   function receiptHTML(m) {
     return `<!doctype html><meta charset="utf-8"><title>Receipt ${m.txn}</title><body style="font-family:Arial,sans-serif;max-width:520px;margin:40px auto;color:#161B2E">
-<h2 style="color:#34428A">IBA EMBA Alumni Portal</h2><p>Payment receipt</p><table style="width:100%;border-collapse:collapse">
+<h2 style="color:#34428A">IBA Executive Alumni Forum</h2><p>Payment receipt</p><table style="width:100%;border-collapse:collapse">
 ${[['Member', m.name], ['Email', m.email], ['Amount paid', '৳' + API.settings.fee + '.00'], ['Payment for', 'Registration fee'], ['Paid via', m.payVia], ['Transaction ID', m.txn], ['Date', fmtDateTime(m.paidOn)]].map(([a, b]) => `<tr><td style="padding:8px 0;border-bottom:1px solid #E3E6EC;color:#7B8196">${a}</td><td style="text-align:right;border-bottom:1px solid #E3E6EC"><b>${esc(b)}</b></td></tr>`).join('')}
 </table><p style="color:#7B8196;font-size:12px">Institute of Business Administration, University of Dhaka · Executive MBA alumni</p></body>`;
   }
@@ -358,7 +364,7 @@ ${[['Member', m.name], ['Email', m.email], ['Amount paid', '৳' + API.settings.
     const m = API.me(); if (!m.paid) return go('#/fee');
     screen(`<div class="success-ico">${icon('check')}</div>
       <h1 class="center" style="font-size:26px">Payment successful</h1>
-      <p class="center muted" style="margin:6px 0 18px">Welcome to the IBA EMBA alumni portal, ${esc(first(m.name))}.</p>
+      <p class="center muted" style="margin:6px 0 18px">Welcome to the IBA Executive Alumni Forum, ${esc(first(m.name))}.</p>
       <div class="receipt"><div><span>Amount paid</span><b>${taka(API.settings.fee)}.00</b></div><div><span>Payment for</span><b>Registration fee</b></div><div><span>Paid via</span><b>${esc(m.payVia)}</b></div><div><span>Transaction ID</span><b>${esc(m.txn)}</b></div><div><span>Date</span><b>${fmtDateTime(m.paidOn)}</b></div></div>
       <p class="cap">Receipt sent to ${esc(m.email)}</p>
       <div class="footer-cta stack"><button class="btn ghost block" id="dl">${icon('download')}Download receipt</button><a class="btn block" href="#/directory">Go to directory</a></div>`);
@@ -469,7 +475,7 @@ ${[['Member', m.name], ['Email', m.email], ['Amount paid', '৳' + API.settings.
   function profile(id) {
     const p = API.member(id); const me = API.me();
     if (!p) return screen(`<div class="topbar">${backBtn('#/directory')}</div><div class="empty">This member is not available.</div>`, { tab: 'dir' });
-    const greet = `Assalamu alaikum ${first(p.name)}, I found you on the IBA EMBA alumni portal.`;
+    const greet = `Assalamu alaikum ${first(p.name)}, I found you on the IBA Executive Alumni Forum.`;
     const btns = [`<a class="cbtn" href="#/m/${p.id}/message">${icon('mail')}Email</a>`];
     if (p.whatsapp) btns.push(`<a class="cbtn wa" href="${waLink(p.whatsapp, greet)}" target="_blank" rel="noopener">${icon('wa')}WhatsApp</a>`);
     if (p.phone) btns.push(`<a class="cbtn" href="${telLink(p.phone)}">${icon('phone')}Call</a>`);
@@ -478,14 +484,14 @@ ${[['Member', m.name], ['Email', m.email], ['Amount paid', '৳' + API.settings.
     const privateNums = !p.whatsapp && !p.phone;
     screen(`<div class="topbar">${backBtn('javascript:history.back()')}<span class="grow"></span></div>
       <div class="prof-head">${avatar(p, 'lg')}<h2>${esc(p.name)}</h2><div class="role">${esc(p.designation)}${p.org ? ', ' + esc(p.org) : ''}</div>
-        <div class="tags"><span class="tag blue">EMBA ${p.batch}</span>${p.industry ? `<span class="tag">${esc(short(p.industry))}</span>` : ''}<span class="tag">${esc(p.city)}</span>${p.blood ? `<span class="tag red">${esc(p.blood)}</span>` : ''}</div></div>
+        <div class="tags"><span class="tag blue">EMBA ${p.batch}</span>${p.industry ? `<span class="tag">${esc(short(p.industry))}</span>` : ''}<span class="tag">${esc(API.place(p))}</span>${p.blood ? `<span class="tag red">${esc(p.blood)}</span>` : ''}</div></div>
       <div class="contact-grid n${Math.min(btns.length, 4)}">${btns.slice(0, 4).join('')}</div>
       ${privateNums ? `<div class="note">${esc(first(p.name))} keeps phone and WhatsApp private. You can still reach ${esc(first(p.name))} with a portal email.</div>` : ''}
       <div class="section">
         ${p.bio ? `<h4>About</h4><p>${esc(p.bio)}</p>` : ''}
         ${p.expertise.length ? `<h4>Expertise</h4><div class="chips">${p.expertise.map((e) => `<span class="tag">${esc(e)}</span>`).join('')}</div>` : ''}
         ${p.interests.length ? `<h4>Interests</h4><div class="chips">${p.interests.map((e) => `<span class="tag">${esc(e)}</span>`).join('')}</div>` : ''}
-        <h4>Details</h4><p class="small">EMBA ${p.batch}${p.gradYear ? ' · graduated ' + p.gradYear : ''} · ${esc(p.area ? p.area + ', ' : '')}${esc(p.city)} · member since ${fmtDate(p.registeredOn)}</p>
+        <h4>Details</h4><p class="small">EMBA ${p.batch}${p.gradYear ? ' · graduated ' + p.gradYear : ''} · ${esc(API.place(p))} · member since ${fmtDate(p.registeredOn)}</p>
       </div>
       ${me.id !== p.id ? '<button class="report-link" id="rep">Report profile</button>' : ''}`, { tab: 'dir' });
     if ($('#rep')) $('#rep').onclick = () => {
@@ -515,24 +521,22 @@ ${[['Member', m.name], ['Email', m.email], ['Amount paid', '৳' + API.settings.
 
   // ---------- 7 blood finder ----------
   function blood(q) {
-    const me = API.me(); const group = q.g || me.blood || 'O-'; const city = q.c || me.city || 'Dhaka'; const area = q.a || '';
-    const donors = API.donors({ group, city, area }); const elig = donors.filter((d) => d.eligible).length;
+    const me = API.me(); const group = q.g || me.blood || 'O-'; const city = q.c || (API.CITIES.includes(me.city) ? me.city : 'Dhaka');
+    const donors = API.donors({ group, city }); const elig = donors.filter((d) => d.eligible).length;
     const urgent = API.openRequestsFor(me); const mine = API.myRequests();
-    const url = (o) => '#/blood?' + new URLSearchParams(Object.assign({ g: group, c: city, a: area }, o)).toString();
+    const url = (o) => '#/blood?' + new URLSearchParams(Object.assign({ g: group, c: city }, o)).toString();
     screen(`<div class="topbar"><h1>Find blood</h1>${bell()}</div>
       ${urgent.length ? `<a class="urgent" href="#/blood/r/${urgent[0].id}"><span class="grow"><b>${urgent.length} urgent request${urgent.length > 1 ? 's' : ''}</b> near you · ${esc(urgent[0].group)} at ${esc(urgent[0].hospital)}</span>${icon('chev')}</a>` : ''}
       ${mine.filter((r) => r.status === 'open').map((r) => `<a class="urgent" style="background:var(--blue-50);color:var(--blue)" href="#/blood/r/${r.id}"><span class="grow"><b>Your request</b> · ${esc(r.group)} · ${r.offers.length} offer${r.offers.length === 1 ? '' : 's'} so far</span>${icon('chev')}</a>`).join('')}
       <div class="bloodgrid" id="bg">${API.BLOOD.map((b) => `<a href="${url({ g: b })}" class="${b === group ? 'on' : ''}">${b}</a>`).join('')}</div>
-      <div class="row" style="margin-top:10px"><select class="select grow" id="city">${API.CITIES.map((c) => `<option ${c === city ? 'selected' : ''}>${c}</option>`).join('')}</select>
-        <select class="select grow" id="area"><option value="">Any area</option>${(API.AREAS[city] || []).map((a) => `<option ${a === area ? 'selected' : ''}>${a}</option>`).join('')}</select></div>
-      <div class="count">${donors.length} ${esc(group)} donor${donors.length === 1 ? '' : 's'} in ${esc(area || city)} · ${elig} eligible</div>
+      <div class="row" style="margin-top:10px"><select class="select grow" id="city" aria-label="City">${API.CITIES.map((c) => `<option ${c === city ? 'selected' : ''}>${c}</option>`).join('')}</select></div>
+      <div class="count">${donors.length} ${esc(group)} donor${donors.length === 1 ? '' : 's'} in ${esc(city)} · ${elig} eligible</div>
       <div id="dl">${donors.slice(0, 40).map((d) => `<div class="dcard">${avatar(d)}<div class="grow"><div class="row"><a href="#/m/${d.id}" style="color:inherit;font-weight:600">${esc(d.name)}</a><span class="grp">${esc(d.blood)}</span></div>
-          <div class="small muted">EMBA ${d.batch} · ${esc(d.area || d.city)}</div><div style="margin:5px 0 7px">${d.eligible ? '<span class="tag green">Eligible to donate</span>' : '<span class="tag">Donated recently</span>'}</div>
-          <div class="actions row wrap" style="gap:6px">${contactPills(d, { noPrivate: true })}</div></div></div>`).join('') || '<div class="empty">No donors listed for this group here yet. Try another area, or post an urgent request.</div>'}</div>
+          <div class="small muted">EMBA ${d.batch} · ${esc(d.city)}</div><div style="margin:5px 0 7px">${d.eligible ? '<span class="tag green">Eligible to donate</span>' : '<span class="tag">Donated recently</span>'}</div>
+          <div class="actions row wrap" style="gap:6px">${contactPills(d, { noPrivate: true })}</div></div></div>`).join('') || '<div class="empty">No donors listed for this group here yet. Try another city, or post an urgent request.</div>'}</div>
       <a class="btn danger-ghost block" href="#/blood/new?g=${encodeURIComponent(group)}&c=${encodeURIComponent(city)}" style="margin-top:6px">Post an urgent request</a>
       ${mine.length ? `<div class="group-title">Your past requests</div>${mine.map((r) => `<a class="prow" href="#/blood/r/${r.id}" style="color:inherit"><span class="grow"><b>${esc(r.group)} · ${r.units} unit${r.units > 1 ? 's' : ''} · ${esc(r.hospital)}</b><span>${fmtDate(r.createdAt)}</span></span><span class="tag ${r.status === 'open' ? 'red' : r.status === 'fulfilled' ? 'green' : ''}">${r.status}</span></a>`).join('')}` : ''}`, { tab: 'blood' });
-    $('#city').onchange = (e) => go(url({ c: e.target.value, a: '' }));
-    $('#area').onchange = (e) => go(url({ a: e.target.value }));
+    $('#city').onchange = (e) => go(url({ c: e.target.value }));
   }
   function bloodNew(q) {
     const me = API.me(); let group = q.g || 'O-'; let units = 1;
@@ -544,7 +548,7 @@ ${[['Member', m.name], ['Email', m.email], ['Amount paid', '৳' + API.settings.
         <div class="row" style="align-items:flex-end"><div class="field grow"><span>Units</span><div class="counter"><button type="button" id="dn">−</button><b id="u">1</b><button type="button" id="up">+</button></div></div>
           <label class="field grow"><span>Needed by</span><input class="input" type="datetime-local" id="by" value="${local}"></label></div>
         <label class="field"><span>Hospital</span><input class="input" id="hosp" placeholder="e.g. Dhaka Medical College Hospital"></label>
-        <label class="field"><span>City</span><select class="select" id="city">${API.CITIES.filter((c) => c !== 'Abroad').map((c) => `<option ${c === (q.c || me.city) ? 'selected' : ''}>${c}</option>`).join('')}</select></label>
+        <label class="field"><span>City</span><select class="select" id="city">${API.CITIES.map((c) => `<option ${c === (q.c || me.city) ? 'selected' : ''}>${c}</option>`).join('')}</select></label>
         <label class="field"><span>Contact number at hospital</span><input class="input" id="ct" type="tel" value="${esc(me.whatsapp)}"></label>
         <div class="alert-red" id="info"></div>
         <button class="btn danger block" id="send">Send request</button>
@@ -572,7 +576,7 @@ ${[['Member', m.name], ['Email', m.email], ['Amount paid', '৳' + API.settings.
     if (mine) {
       screen(`<div class="topbar">${backBtn('#/blood')}<h2>Your request</h2></div>${head}
         <b style="font-size:13px">${r.offers.length} member${r.offers.length === 1 ? '' : 's'} offered to donate</b>
-        <div style="margin-top:8px">${r.offers.map((o) => { const p = API.offerer(o.by); return p ? `<div class="dcard">${avatar(p)}<div class="grow"><a href="#/m/${p.id}" style="color:inherit;font-weight:600">${esc(p.name)}</a><div class="small muted">${esc(p.area || p.city)} · offered ${ago(o.at)}</div><div class="row wrap" style="gap:6px;margin-top:6px">${contactPills(p, { noPrivate: true })}</div></div></div>` : ''; }).join('') || `<div class="empty">${r.status === 'open' ? '<span class="spinner"></span><br><br>Waiting for donors to respond. You will get an alert when someone offers.' : 'No offers were made.'}</div>`}</div>
+        <div style="margin-top:8px">${r.offers.map((o) => { const p = API.offerer(o.by); return p ? `<div class="dcard">${avatar(p)}<div class="grow"><a href="#/m/${p.id}" style="color:inherit;font-weight:600">${esc(p.name)}</a><div class="small muted">${esc(p.city)} · offered ${ago(o.at)}</div><div class="row wrap" style="gap:6px;margin-top:6px">${contactPills(p, { noPrivate: true })}</div></div></div>` : ''; }).join('') || `<div class="empty">${r.status === 'open' ? '<span class="spinner"></span><br><br>Waiting for donors to respond. You will get an alert when someone offers.' : 'No offers were made.'}</div>`}</div>
         <div class="footer-cta">${r.status === 'open' ? '<button class="btn block" id="done">' + icon('check') + 'Mark as fulfilled</button>' : ''}<p class="cap">Donors follow the hospital's own screening before donating.</p></div>`, { tab: 'blood' });
       if ($('#done')) $('#done').onclick = () => { API.fulfil(r.id); toast('Request closed. Thank you, donors!'); render(); };
       if (r.status === 'open' && r.demo) { // demo: donors respond over the next few seconds
@@ -611,7 +615,7 @@ ${[['Member', m.name], ['Email', m.email], ['Amount paid', '৳' + API.settings.
       <p class="sub">Invite an IBA EMBA alumnus. Each invite is a personal link that works only for their email and expires in ${API.settings.inviteDays} days.</p>
       <form id="f" class="stack" novalidate>
         <label class="field"><span>Their email</span><input class="input" name="email" type="email" placeholder="name@gmail.com" required></label>
-        <div class="row"><label class="field grow"><span>Name (optional)</span><input class="input" name="name" placeholder="Full name"></label><label class="field" style="width:120px"><span>Batch</span><select class="select" name="batch"><option value="">Unsure</option>${Array.from({ length: 50 }, (_, i) => 50 - i).map((b) => `<option>${b}</option>`).join('')}</select></label></div>
+        <div class="row"><label class="field grow"><span>Name (optional)</span><input class="input" name="name" placeholder="Full name"></label><label class="field" style="width:120px"><span>Batch</span><select class="select" name="batch"><option value="">Unsure</option>${Array.from({ length: 45 }, (_, i) => 45 - i).map((b) => `<option>${b}</option>`).join('')}</select></label></div>
         <label class="field"><span>Personal note (optional)</span><textarea class="textarea" name="note" style="min-height:70px" placeholder="We are all joining here. See you inside!"></textarea></label>
         <div class="field"><span>Send by</span><div class="row"><button type="submit" class="btn grow" data-ch="Email">${icon('mail')}Email</button><button type="submit" class="btn grow" data-ch="WhatsApp" style="background:var(--green)">${icon('wa')}WhatsApp</button></div></div>
         <div id="err" class="hint bad"></div>
@@ -626,7 +630,7 @@ ${[['Member', m.name], ['Email', m.email], ['Amount paid', '৳' + API.settings.
       try {
         const inv = API.createInvite({ email: f.email.value, name: f.name.value.trim(), note: f.note.value.trim(), channel: ch, batch: +f.batch.value || null });
         const link = `${location.origin}${location.pathname}#/i/${inv.code}`;
-        if (ch === 'WhatsApp') window.open(waLink('', `Assalamu alaikum! I've invited you to the IBA EMBA alumni portal. Join here: ${link}\nLink works for ${inv.email} and expires on ${fmtDate(inv.expiresAt)}.`), '_blank');
+        if (ch === 'WhatsApp') window.open(waLink('', `Hello! I’ve invited you to the IBA Executive Alumni Forum. Join here: ${link}\nLink works for ${inv.email} and expires on ${fmtDate(inv.expiresAt)}.`), '_blank');
         else toast(`Invitation emailed to ${inv.email}`);
         invite();
       } catch (err) { $('#err').textContent = err.message; }
@@ -695,7 +699,7 @@ ${[['Member', m.name], ['Email', m.email], ['Amount paid', '৳' + API.settings.
     if (p.linkedin) btns.push(`<span class="cbtn">${icon('linkedin')}LinkedIn</span>`);
     screen(`<div class="topbar">${backBtn('#/me')}<h2>How members see you</h2></div>
       <div class="prof-head">${avatar(p, 'lg')}<h2>${esc(p.name)}</h2><div class="role">${esc(p.designation)}${p.org ? ', ' + esc(p.org) : ''}</div>
-        <div class="tags"><span class="tag blue">EMBA ${p.batch}</span>${p.industry ? `<span class="tag">${esc(short(p.industry))}</span>` : ''}<span class="tag">${esc(p.city)}</span>${p.blood ? `<span class="tag red">${esc(p.blood)}</span>` : ''}</div></div>
+        <div class="tags"><span class="tag blue">EMBA ${p.batch}</span>${p.industry ? `<span class="tag">${esc(short(p.industry))}</span>` : ''}<span class="tag">${esc(API.place(p))}</span>${p.blood ? `<span class="tag red">${esc(p.blood)}</span>` : ''}</div></div>
       <div class="contact-grid n${Math.min(btns.length, 4)}">${btns.slice(0, 4).join('')}</div>
       ${p.hidden.length ? `<div class="note">Hidden from members: ${esc(p.hidden.join(', '))}.</div>` : ''}
       <div class="section">${p.bio ? `<h4>About</h4><p>${esc(p.bio)}</p>` : ''}${p.expertise.length ? `<h4>Expertise</h4><div class="chips">${p.expertise.map((e) => `<span class="tag">${esc(e)}</span>`).join('')}</div>` : ''}</div>

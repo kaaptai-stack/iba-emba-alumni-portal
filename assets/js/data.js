@@ -1,9 +1,12 @@
-/* IBA EMBA Alumni Portal — simulated backend.
+/* IBA Executive Alumni Forum — simulated backend.
  * All state lives in localStorage so the member app and the admin panel share it.
  * Swap the functions on `API` for real HTTP calls when the server is built;
  * the screens only talk to `API`, never to `state` directly. */
 (function () {
-  const KEY = 'iba-emba-portal-v1';
+  // Bump the key (not just `version`) when the data shape changes, so an old tab
+  // still running previous code can never overwrite or reseed the new data.
+  const KEY = 'iba-exec-forum-v2';
+  try { localStorage.removeItem('iba-emba-portal-v1'); } catch (e) { /* storage blocked */ }
   const DAY = 86400000;
 
   const INDUSTRIES = [
@@ -18,14 +21,9 @@
     'Development sector and NGOs': 'Development', 'Government and public sector': 'Government',
   };
   const FUNCTIONS = ['Marketing', 'Sales', 'Finance', 'HR', 'Operations', 'IT', 'General mgmt'];
-  const CITIES = ['Dhaka', 'Chattogram', 'Gazipur', 'Sylhet', 'Khulna', 'Rajshahi', 'Narayanganj', 'Abroad'];
-  const AREAS = {
-    Dhaka: ['Dhanmondi', 'Gulshan', 'Banani', 'Uttara', 'Mirpur', 'Motijheel', 'Mohammadpur', 'Bashundhara'],
-    Chattogram: ['Agrabad', 'Khulshi', 'Nasirabad', 'Halishahar'],
-    Gazipur: ['Tongi', 'Joydebpur', 'Kaliakair'],
-    Sylhet: ['Zindabazar', 'Uposhohor'], Khulna: ['Sonadanga', 'Boyra'], Rajshahi: ['Shaheb Bazar', 'Uposhohor'],
-    Narayanganj: ['Fatullah', 'Siddhirganj'], Abroad: ['Toronto', 'London', 'Dubai', 'Sydney', 'Kuala Lumpur', 'New York'],
-  };
+  const CITIES = ['Dhaka', 'Chattogram', 'Gazipur', 'Narayanganj', 'Sylhet', 'Khulna', 'Rajshahi', 'Barishal', 'Rangpur', 'Mymensingh', 'Cumilla'];
+  const COUNTRIES = ['Bangladesh', 'Australia', 'Canada', 'Germany', 'India', 'Malaysia', 'Qatar', 'Saudi Arabia', 'Singapore', 'United Arab Emirates', 'United Kingdom', 'United States', 'Other'];
+  const ABROAD = [['Toronto', 'Canada'], ['London', 'United Kingdom'], ['Dubai', 'United Arab Emirates'], ['Sydney', 'Australia'], ['Kuala Lumpur', 'Malaysia'], ['New York', 'United States']];
   const BLOOD = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
 
   // ---------- deterministic seed data ----------
@@ -79,7 +77,7 @@
 
   function baseMember(o) {
     return Object.assign({
-      id: '', name: '', email: '', batch: 40, gradYear: 2019, city: 'Dhaka', area: '', photo: null,
+      id: '', name: '', email: '', batch: 40, gradYear: 2019, country: 'Bangladesh', city: 'Dhaka', photo: null,
       designation: '', org: '', industry: '', func: '', expertise: [], bio: '', interests: [],
       whatsapp: '', phone: '', phoneSameAsWhatsapp: true, linkedin: '', facebook: '',
       blood: '', donor: false, showBlood: false, lastDonation: null,
@@ -100,7 +98,9 @@
     const industry = pick(INDUSTRIES);
     const func = pick(FUNCTIONS);
     const batch = 22 + Math.floor(R() * 24);
-    const city = chance(0.68) ? 'Dhaka' : pick(CITIES);
+    const abroad = chance(0.08) ? pick(ABROAD) : null;
+    const city = abroad ? abroad[0] : chance(0.72) ? 'Dhaka' : pick(CITIES);
+    const country = abroad ? abroad[1] : 'Bangladesh';
     const regDays = Math.floor(R() * 120);
     const paid = chance(0.93);
     const wa = phone();
@@ -108,7 +108,7 @@
     const exp = EXPERTISE[func].slice().sort(() => R() - 0.5).slice(0, 2 + Math.floor(R() * 2));
     return baseMember(Object.assign({
       id: slug(name) + '-' + i, name, email: slugEmail(name, i), batch, gradYear: 1990 + batch - 10 + Math.floor(R() * 2),
-      city, area: pick(AREAS[city]), designation: pick(TITLES[func]), org: pick(ORGS[industry]), industry, func,
+      country, city, designation: pick(TITLES[func]), org: pick(ORGS[industry]), industry, func,
       expertise: exp, bio: '', interests: chance(0.5) ? [pick(INTERESTS), pick(INTERESTS)].filter((v, k, a) => a.indexOf(v) === k) : [],
       whatsapp: wa, phone: wa, linkedin: chance(0.7) ? `linkedin.com/in/${slug(name).replace(/-/g, '')}` : '',
       visible: { email: true, whatsapp: chance(0.78), phone: chance(0.4), linkedin: true, facebook: false },
@@ -122,15 +122,15 @@
 
   function seed() {
     const named = [
-      { id: 'farhana-rahman', name: 'Farhana Rahman', email: 'farhana.rahman@gmail.com', batch: 38, gradYear: 2017, city: 'Dhaka', area: 'Gulshan', designation: 'Head of Retail Banking', org: 'Padma Bank', industry: 'Banking and financial services', func: 'General mgmt', expertise: ['Retail banking', 'Branch network', 'Digital channels'], interests: ['Travel', 'Book club'], bio: '18 years in retail and SME banking. Happy to help alumni exploring careers in banking.', whatsapp: '+880 1713-552211', phone: '+880 1713-552211', visible: { email: true, whatsapp: true, phone: true, linkedin: true, facebook: false }, linkedin: 'linkedin.com/in/farhanarahman', blood: 'A+', donor: true, showBlood: true, registeredOn: '2026-09-02T09:00:00Z', paidOn: '2026-09-02T09:20:00Z', invitedBy: 'admin', role: 'member', password: 'demo1234' },
-      { id: 'tanvir-islam', name: 'Tanvir Islam', email: 'tanvir.islam@yahoo.com', batch: 41, gradYear: 2020, city: 'Gazipur', area: 'Tongi', designation: 'Chief Financial Officer', org: 'Jamuna Textiles', industry: 'Textiles and RMG', func: 'Finance', expertise: ['Corporate finance', 'Export finance', 'Audit'], bio: 'Finance lead in export-oriented garments. Interested in startups and angel investing.', visible: { email: true, whatsapp: false, phone: false, linkedin: true, facebook: false }, linkedin: 'linkedin.com/in/tanvirislam', registeredOn: '2026-09-05T09:00:00Z', paidOn: '2026-09-05T10:00:00Z', blood: 'B+', donor: false },
+      { id: 'farhana-rahman', name: 'Farhana Rahman', email: 'farhana.rahman@gmail.com', batch: 38, gradYear: 2017, city: 'Dhaka', designation: 'Head of Retail Banking', org: 'Padma Bank', industry: 'Banking and financial services', func: 'General mgmt', expertise: ['Retail banking', 'Branch network', 'Digital channels'], interests: ['Travel', 'Book club'], bio: '18 years in retail and SME banking. Happy to help alumni exploring careers in banking.', whatsapp: '+880 1713-552211', phone: '+880 1713-552211', visible: { email: true, whatsapp: true, phone: true, linkedin: true, facebook: false }, linkedin: 'linkedin.com/in/farhanarahman', blood: 'A+', donor: true, showBlood: true, registeredOn: '2026-09-02T09:00:00Z', paidOn: '2026-09-02T09:20:00Z', invitedBy: 'admin', role: 'member', password: 'demo1234' },
+      { id: 'tanvir-islam', name: 'Tanvir Islam', email: 'tanvir.islam@yahoo.com', batch: 41, gradYear: 2020, city: 'Gazipur', designation: 'Chief Financial Officer', org: 'Jamuna Textiles', industry: 'Textiles and RMG', func: 'Finance', expertise: ['Corporate finance', 'Export finance', 'Audit'], bio: 'Finance lead in export-oriented garments. Interested in startups and angel investing.', visible: { email: true, whatsapp: false, phone: false, linkedin: true, facebook: false }, linkedin: 'linkedin.com/in/tanvirislam', registeredOn: '2026-09-05T09:00:00Z', paidOn: '2026-09-05T10:00:00Z', blood: 'B+', donor: false },
       { id: 'sadia-karim', name: 'Sadia Karim', email: 'sadia.karim@gmail.com', batch: 35, gradYear: 2014, designation: 'Country Lead', org: 'Nodi Pay', industry: 'Fintech and MFS', func: 'General mgmt', expertise: ['Payments', 'Startups', 'Partnerships'], visible: { email: true, whatsapp: true, phone: false, linkedin: true, facebook: false }, registeredOn: '2026-09-03T09:00:00Z', paidOn: '2026-09-03T09:30:00Z' },
-      { id: 'mahmud-hasan', name: 'Mahmud Hasan', email: 'mahmud.hasan@gmail.com', batch: 36, gradYear: 2015, area: 'Dhanmondi', designation: 'VP Treasury', org: 'Surma Bank', industry: 'Banking and financial services', func: 'Finance', expertise: ['Treasury', 'ALM', 'FX'], blood: 'O-', donor: true, lastDonation: isoDaysAgo(150), visible: { email: true, whatsapp: true, phone: true, linkedin: false, facebook: false } },
+      { id: 'mahmud-hasan', name: 'Mahmud Hasan', email: 'mahmud.hasan@gmail.com', batch: 36, gradYear: 2015, designation: 'VP Treasury', org: 'Surma Bank', industry: 'Banking and financial services', func: 'Finance', expertise: ['Treasury', 'ALM', 'FX'], blood: 'O-', donor: true, lastDonation: isoDaysAgo(150), visible: { email: true, whatsapp: true, phone: true, linkedin: false, facebook: false } },
       { id: 'nazia-jahan', name: 'Nazia Jahan', email: 'nazia.jahan@outlook.com', batch: 40, gradYear: 2019, designation: 'Risk Manager', org: 'Teesta Bank', industry: 'Banking and financial services', func: 'Finance', expertise: ['Risk management', 'Basel III'], linkedin: 'linkedin.com/in/naziajahan', visible: { email: true, whatsapp: true, phone: false, linkedin: true, facebook: false } },
       { id: 'arif-rahman', name: 'Arif Rahman', email: 'arif.rahman@gmail.com', batch: 39, gradYear: 2018, designation: 'SME Head', org: 'Bangla Trust Bank', industry: 'Banking and financial services', func: 'Sales', expertise: ['SME lending', 'Credit'] },
-      { id: 'nasir-uddin', name: 'Nasir Uddin', email: 'nasir.uddin@gmail.com', batch: 33, gradYear: 2012, area: 'Uttara', designation: 'General Manager', org: 'Bay Logistics', industry: 'Logistics and shipping', func: 'Operations', blood: 'O-', donor: true, lastDonation: isoDaysAgo(30) },
-      { id: 'shirin-akter', name: 'Shirin Akter', email: 'shirin.akter@gmail.com', batch: 37, gradYear: 2016, area: 'Mirpur', designation: 'Head of HR', org: 'Sonar Foods', industry: 'FMCG', func: 'HR', blood: 'O-', donor: true, visible: { email: true, whatsapp: true, phone: false, linkedin: true, facebook: false } },
-      { id: 'kamrul-bashar', name: 'Kamrul Bashar', email: 'kamrul.bashar@yahoo.com', batch: 34, gradYear: 2013, area: 'Motijheel', designation: 'Deputy Managing Director', org: 'Meghna Capital', industry: 'Banking and financial services', func: 'General mgmt', blood: 'O-', donor: true, visible: { email: true, whatsapp: false, phone: true, linkedin: true, facebook: false } },
+      { id: 'nasir-uddin', name: 'Nasir Uddin', email: 'nasir.uddin@gmail.com', batch: 33, gradYear: 2012, designation: 'General Manager', org: 'Bay Logistics', industry: 'Logistics and shipping', func: 'Operations', blood: 'O-', donor: true, lastDonation: isoDaysAgo(30) },
+      { id: 'shirin-akter', name: 'Shirin Akter', email: 'shirin.akter@gmail.com', batch: 37, gradYear: 2016, designation: 'Head of HR', org: 'Sonar Foods', industry: 'FMCG', func: 'HR', blood: 'O-', donor: true, visible: { email: true, whatsapp: true, phone: false, linkedin: true, facebook: false } },
+      { id: 'kamrul-bashar', name: 'Kamrul Bashar', email: 'kamrul.bashar@yahoo.com', batch: 34, gradYear: 2013, designation: 'Deputy Managing Director', org: 'Meghna Capital', industry: 'Banking and financial services', func: 'General mgmt', blood: 'O-', donor: true, visible: { email: true, whatsapp: false, phone: true, linkedin: true, facebook: false } },
       { id: 'liza-chowdhury', name: 'Liza Chowdhury', email: 'liza.chowdhury@outlook.com', batch: 40, designation: 'Brand Manager', org: 'Rupali Consumer', industry: 'FMCG', func: 'Marketing', approval: 'pending', invitedBy: 'nazia-jahan', paid: false, paymentStatus: 'unpaid', paidOn: null, txn: null, registeredOn: '2026-10-01T08:00:00Z' },
       { id: 'imtiaz-ali', name: 'Imtiaz Ali', email: 'imtiaz.ali@gmail.com', batch: 44, designation: 'IT Manager', org: 'Bengal Cloud', industry: 'IT and software', func: 'IT', approval: 'pending', invitedBy: 'sadia-karim', paid: false, paymentStatus: 'failed', paidOn: null, txn: null, registeredOn: '2026-10-02T08:00:00Z' },
       { id: 'selina-parvin', name: 'Selina Parvin', email: 'selina.parvin@gmail.com', batch: 40, designation: 'Talent Lead', org: 'Shapla Mobile', industry: 'Telecom', func: 'HR', invitedBy: 'nazia-jahan', registeredOn: '2026-09-30T08:00:00Z' },
@@ -142,7 +142,7 @@
     const names = new Set(members.map((m) => m.name));
     for (let i = 0; members.length < 285; i++) { const m = genMember(100 + i); if (!names.has(m.name)) { names.add(m.name); members.push(m); } }
     // ensure some O- donors in Dhaka for the blood finder demo
-    members.slice(20, 34).forEach((m, k) => { m.blood = 'O-'; m.donor = true; m.city = 'Dhaka'; m.area = AREAS.Dhaka[k % 8]; if (k < 3) m.lastDonation = isoDaysAgo(20 + k * 10); });
+    members.slice(20, 34).forEach((m, k) => { m.blood = 'O-'; m.donor = true; m.country = 'Bangladesh'; m.city = 'Dhaka'; if (k < 3) m.lastDonation = isoDaysAgo(20 + k * 10); });
     members.forEach((m) => {
       const reg = new Date(m.registeredOn).getTime();
       if (m.paidOn && new Date(m.paidOn).getTime() < reg) m.paidOn = new Date(reg + 20 * 60000).toISOString();
@@ -157,10 +157,10 @@
       { at: isoDaysAgo(33), actor: 'Admin', action: 'Uploaded founding members', target: '120 members', detail: 'CSV' },
     ];
     return {
-      version: 1,
+      version: 2,
       members,
       invites: [
-        { code: 'K7F2Q9', email: 'rafiq.ahmed@gmail.com', name: 'Rafiq Ahmed', invitedBy: 'farhana-rahman', note: 'Rafiq bhai, we are all joining here. Easy to find batchmates and blood donors. See you inside!', channel: 'WhatsApp', createdAt: isoDaysAgo(0), expiresAt: '2026-10-12T23:59:00Z', status: 'sent', batch: 40 },
+        { code: 'K7F2Q9', email: 'rafiq.ahmed@gmail.com', name: 'Rafiq Ahmed', invitedBy: 'farhana-rahman', note: 'Rafiq bhai, we are all joining here. Easy to find batchmates and blood donors. See you inside!', channel: 'WhatsApp', createdAt: isoDaysAgo(0), expiresAt: isoDaysAgo(-30), status: 'sent', batch: 40 },
       ],
       bulkInvites: [
         { id: 'b2', at: '2026-10-01T09:00:00Z', sent: 1000, opened: 612, joined: 268 },
@@ -180,7 +180,7 @@
       ],
       audit,
       groups: seedGroups(),
-      settings: { fee: 200, eligibilityDays: 90, msgLimit: 20, inviteDays: 7, requestHours: 72, approvalForMemberInvites: true },
+      settings: { fee: 200, eligibilityDays: 90, msgLimit: 20, inviteDays: 30, requestHours: 72, approvalForMemberInvites: true },
       session: null,
       admin: { email: 'admin@ibaexecutivemba.com', password: 'admin1234', signedIn: false },
     };
@@ -227,7 +227,7 @@
   let state;
   function load() {
     try { state = JSON.parse(localStorage.getItem(KEY)); } catch (e) { state = null; }
-    if (!state || state.version !== 1) { state = seed(); save(); }
+    if (!state || state.version !== 2) { state = seed(); save(); }
     if (!state.groups) { state.groups = seedGroups(); save(); } // data saved before groups existed
     return state;
   }
@@ -250,7 +250,7 @@
     if (!m) return null;
     const v = m.visible;
     const out = {
-      id: m.id, name: m.name, batch: m.batch, gradYear: m.gradYear, city: m.city, area: m.area, photo: m.photo,
+      id: m.id, name: m.name, batch: m.batch, gradYear: m.gradYear, country: m.country, city: m.city, photo: m.photo,
       designation: m.designation, org: m.org, industry: m.industry, func: m.func, expertise: m.expertise.slice(),
       bio: m.bio, interests: m.interests.slice(), registeredOn: m.registeredOn, donor: m.donor,
       canEmail: true, hidden: [],
@@ -292,7 +292,8 @@
 
   // ---------- API ----------
   const API = {
-    INDUSTRIES, INDUSTRY_SHORT, FUNCTIONS, CITIES, AREAS, BLOOD,
+    INDUSTRIES, INDUSTRY_SHORT, FUNCTIONS, CITIES, COUNTRIES, BLOOD,
+    place(m) { return !m.country || m.country === 'Bangladesh' ? m.city : `${m.city ? m.city + ', ' : ''}${m.country}`; },
     get settings() { return state.settings; },
     reset() { state = seed(); save(); },
     reload: load,
@@ -364,7 +365,7 @@
     startPayment() {
       const m = API.me(); const ref = `IBA-${m.batch}-${String(state.members.indexOf(m) + 1).padStart(4, '0')}`;
       m.payRef = ref; m.payExpires = Date.now() + 10 * 60000; save();
-      return { ref, amount: state.settings.fee, expires: m.payExpires, payload: `00020101021226380010bd.bangla0118IBAEMBAALUMNI${ref}5204829953030505406${state.settings.fee}.005802BD5925IBA EMBA ALUMNI PORTAL6005DHAKA62${String(ref.length + 4).padStart(2, '0')}05${String(ref.length).padStart(2, '0')}${ref}6304` };
+      return { ref, amount: state.settings.fee, expires: m.payExpires, payload: `00020101021226380010bd.bangla0118IBAEXECALUMNI${ref}5204829953030505406${state.settings.fee}.005802BD5926IBA EXECUTIVE ALUMNI FORUM6005DHAKA62${String(ref.length + 4).padStart(2, '0')}05${String(ref.length).padStart(2, '0')}${ref}6304` };
     },
     /** Called by the payment gateway webhook in production. */
     confirmPayment(memberId, via, manual) {
@@ -382,7 +383,10 @@
       if (isNew) list = list.filter((m) => Date.now() - new Date(m.registeredOn) < 30 * DAY);
       if (batches) list = list.filter((m) => m.batch >= batches[0] && m.batch <= batches[1]);
       if (industries.length) list = list.filter((m) => industries.includes(m.industry));
-      if (cities.length) list = list.filter((m) => cities.includes(m.city) || (cities.includes('More') && !['Dhaka', 'Chattogram', 'Abroad'].includes(m.city)));
+      if (cities.length) list = list.filter((m) => {
+        const bd = !m.country || m.country === 'Bangladesh';
+        return (bd && cities.includes(m.city)) || (!bd && cities.includes('Abroad')) || (bd && cities.includes('More') && !['Dhaka', 'Chattogram'].includes(m.city));
+      });
       if (reach.includes('WhatsApp')) list = list.filter((m) => m.visible.whatsapp && m.whatsapp);
       if (reach.includes('Phone')) list = list.filter((m) => m.visible.phone && (m.phone || m.whatsapp));
       let scored = list.map((m) => [m, matchScore(m, q)]).filter((x) => x[1] > 0);
@@ -416,9 +420,9 @@
     },
 
     // blood
-    donors({ group, city, area }) {
+    donors({ group, city }) {
       const me = API.me();
-      return state.members.filter((m) => listed(m) && m.donor && m.blood === group && (!city || m.city === city) && (!area || m.area === area) && (!me || m.id !== me.id))
+      return state.members.filter((m) => listed(m) && m.donor && m.blood === group && (!city || m.city === city) && (!me || m.id !== me.id))
         .map(donorView).sort((a, b) => (b.eligible - a.eligible) || a.name.localeCompare(b.name));
     },
     eligibleCount(group, city) { const me = API.me(); return state.members.filter((m) => listed(m) && m.donor && m.blood === group && m.city === city && eligible(m) && m.id !== (me && me.id)).length; },

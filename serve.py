@@ -1,4 +1,4 @@
-"""Local server for the IBA EMBA Alumni Portal prototype.
+"""Local server for the IBA Executive Alumni Forum prototype.
 
 Usage:  python serve.py [port]      (default port 8080)
 Then open http://localhost:8080 (member app) or http://localhost:8080/admin.html
@@ -19,5 +19,5 @@ class NoCacheHandler(http.server.SimpleHTTPRequestHandler):
 if __name__ == "__main__":
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
     port = int(sys.argv[1]) if len(sys.argv) > 1 else 8080
-    print(f"IBA EMBA Alumni Portal: http://localhost:{port}  (admin: http://localhost:{port}/admin.html)")
+    print(f"IBA Executive Alumni Forum: http://localhost:{port}  (admin: http://localhost:{port}/admin.html)")
     http.server.ThreadingHTTPServer(("", port), NoCacheHandler).serve_forever()

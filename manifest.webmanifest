@@ -1,6 +1,6 @@
 {
-  "name": "IBA EMBA Alumni Portal",
-  "short_name": "IBA EMBA",
+  "name": "IBA Executive Alumni Forum",
+  "short_name": "IBA Executive",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",

@@ -1,4 +1,4 @@
-# IBA EMBA Alumni Portal
+# IBA Executive Alumni Forum
 
 Web portal built from *UI screens v1.6*: the mobile-first member app (sections 1–8) and the desktop admin panel (section 9).
 
@@ -21,12 +21,12 @@ Demo logins (sample data):
 | Spec section | Where |
 |---|---|
 | 1 Splash | shown on every load, then routes to sign in / directory |
-| 2 Joining by invitation | `#/i/<code>` → confirm email (OTP) → create password; email and WhatsApp invite previews under `#/demo/...` |
-| 3 Profile set-up | 3-step wizard, skippable; photo crop/compress; per-field privacy switches |
+| 2 Joining by invitation | links valid 30 days; `#/i/<code>` → confirm email (OTP) → create password; email and WhatsApp invite previews under `#/demo/...` |
+| 3 Profile set-up | 3-step wizard, skippable; batches 1–45; country and city (no area); photo crop/compress; per-field privacy switches |
 | 4 Registration fee | ৳200 fee → Bangla QR (red, scannable, Save QR, 10-min expiry) → receipt download |
 | 5 Directory | one search box with typo tolerance, filter sheet with live count, removable chips, infinite scroll (20 at a time) |
 | 6 Profile and contact | contact buttons only for fields the member shares; WhatsApp with pre-filled greeting; portal email with daily limit; report profile |
-| 7 Blood finder | donors by group/city/area, eligibility from last donation (never shown), urgent request with notified-donor count, offers, mark as fulfilled |
+| 7 Blood finder | donors by group and city, eligibility from last donation (never shown), urgent request with notified-donor count, offers, mark as fulfilled |
 | Groups (added) | 5th footer tab: official groups with a platform icon (WhatsApp, Facebook, Messenger, Telegram, LinkedIn, Viber, Signal, Discord, website); tapping opens the group in its app. Admin → Groups to add, edit, reorder, enable, disable, hide or delete |
 | 8 Privacy and account | completeness meter, privacy switches, preview as others see you, pause listing, download data, delete account |
 | 9 Admin | dashboard, members (filters, pagination, enable/disable with reason, CSV export), member profile, bulk invite (dedupe, typo check, skip existing), payments (mark paid manually, look up transaction ID), approvals, reports, blood requests, announcements, audit log, settings |

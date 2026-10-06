@@ -1,4 +1,4 @@
-/* IBA EMBA Alumni Portal — admin panel (desktop). */
+/* IBA Executive Alumni Forum — admin panel (desktop). */
 (function () {
   const { brand, icon, esc, avatar, taka, fmtDate, fmtDateTime, ago, toast, download } = UI;
   const A = API.admin;
@@ -174,7 +174,7 @@
       <div class="grid3">
         <section class="panel"><div class="body">
           <div class="who" style="margin-bottom:14px">${avatar(m, 'lg')}<div><h2 style="font-size:20px">${esc(m.name)}</h2><div style="color:var(--ink-2)">${esc(m.designation)}${m.org ? ', ' + esc(m.org) : ''}</div>
-            <div class="row wrap" style="margin-top:6px;gap:6px"><span class="tag blue">EMBA ${m.batch}</span>${m.industry ? `<span class="tag">${esc(API.INDUSTRY_SHORT[m.industry] || m.industry)}</span>` : ''}<span class="tag">${esc(m.city)}</span>${statusTag(m)}</div></div></div>
+            <div class="row wrap" style="margin-top:6px;gap:6px"><span class="tag blue">EMBA ${m.batch}</span>${m.industry ? `<span class="tag">${esc(API.INDUSTRY_SHORT[m.industry] || m.industry)}</span>` : ''}<span class="tag">${esc(API.place(m))}</span>${statusTag(m)}</div></div></div>
           <h3 style="font-size:14px;margin:6px 0">Contact details</h3>
           <div class="kv"><span>Email</span><b>${esc(m.email)}${hid('email')}</b><span>WhatsApp</span><b>${esc(m.whatsapp) || 'Not added'}${m.whatsapp ? hid('whatsapp') : ''}</b>
             <span>Phone</span><b>${esc(ph) || 'Not added'}${ph ? hid('phone') : ''}</b><span>LinkedIn</span><b>${esc(m.linkedin) || 'Not added'}${m.linkedin ? hid('linkedin') : ''}</b>
@@ -219,7 +219,7 @@
           <div id="csvbox" hidden><input type="file" accept=".csv,text/csv,text/plain" id="file" class="input" style="padding-top:9px"><p class="hint">A column named <b>email</b>, or one address per line.</p></div>
           <div class="hint">Maximum 1,000 per send</div>
           <div id="chk" style="margin-top:10px"></div>
-          <div class="row" style="margin-top:12px"><label class="field grow"><span>EMBA batch (optional)</span><select class="select" id="batch"><option value="">Mixed batches</option>${Array.from({ length: 50 }, (_, i) => 50 - i).map((b) => `<option>${b}</option>`).join('')}</select></label>
+          <div class="row" style="margin-top:12px"><label class="field grow"><span>EMBA batch (optional)</span><select class="select" id="batch"><option value="">Mixed batches</option>${Array.from({ length: 45 }, (_, i) => 45 - i).map((b) => `<option>${b}</option>`).join('')}</select></label>
             <label class="field grow"><span>Sent as</span><input class="input" value="IBA EMBA Alumni Committee" readonly style="background:var(--tint)"></label></div>
           <div class="row" style="margin-top:14px"><button class="btn" id="send" disabled>Send invitations</button><span class="small muted">Each address gets its own email and personal link, valid for ${API.settings.inviteDays} days.</span></div>
         </div></section>
@@ -233,7 +233,7 @@
     const drawRecent = () => { $('#recent').innerHTML = A.bulkInvites().map((b) => `<div class="checkrow"><span>${fmtDate(b.at)} · ${num(b.sent)} sent</span><span class="muted">${num(b.opened)} opened · ${num(b.joined)} joined</span></div>`).join(''); };
     const prev = (email) => {
       const exp = new Date(Date.now() + API.settings.inviteDays * 864e5);
-      $('#prev').innerHTML = `<h4>You're invited to the IBA EMBA alumni portal</h4><div class="small muted">From: IBA EMBA Alumni Committee · To: ${esc(email || 'name@example.com')}</div>
+      $('#prev').innerHTML = `<h4>You're invited to the IBA Executive Alumni Forum</h4><div class="small muted">From: IBA EMBA Alumni Committee · To: ${esc(email || 'name@example.com')}</div>
         <p>Dear alumnus,</p><p>You are invited to join the private members portal for Executive MBA alumni of IBA, University of Dhaka. Find batchmates, connect by email or WhatsApp, and find blood donors in an emergency.</p>
         <p>Registration fee: ${taka(API.settings.fee)}, payable by Bangla QR.</p><span class="btn sm" style="cursor:default">Join the portal</span>
         <p class="small muted">This link works only for ${esc(email || 'this address')} and expires on ${fmtDate(exp)}.</p>`;
@@ -391,7 +391,7 @@
         ${f('eligibilityDays', 'Blood donation interval (days)', 'Donors are shown as eligible this many days after their last donation.', 'min="30" max="365"')}
         ${f('requestHours', 'Blood request lifetime (hours)', 'Urgent requests close automatically after this.', 'min="6" max="168"')}
         ${f('msgLimit', 'Portal emails per member per day', 'Limits spam through the portal email form.', 'min="1" max="200"')}
-        ${f('inviteDays', 'Invite link validity (days)', 'Personal invite links expire after this.', 'min="1" max="60"')}
+        ${f('inviteDays', 'Invite link validity (days)', 'Personal invite links expire after this.', 'min="1" max="90"')}
         <label class="check" style="align-items:center"><input type="checkbox" id="appr" ${s.approvalForMemberInvites ? 'checked' : ''}> Members invited by other members need committee approval before they are listed</label>
         <div><button class="btn" id="save">Save settings</button></div></div></section>`);
     $('#save').onclick = () => {
